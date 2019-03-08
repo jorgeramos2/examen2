@@ -6,6 +6,7 @@
 package videogame;
 
 import java.awt.Graphics;
+import java.awt.Rectangle;
 
 /**
  *
@@ -50,6 +51,10 @@ public class Player extends Item{
 
     public void setHeight(int height) {
         this.height = height;
+    }
+    
+    public Rectangle getPerimeter(){
+        return new Rectangle(getX(), getY(), getWidth(), getHeight());
     }
 
     @Override

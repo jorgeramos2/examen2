@@ -8,6 +8,7 @@ package videogame;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
+import java.util.Iterator;
 import java.util.LinkedList;
 
 /**
@@ -30,6 +31,7 @@ public class Game implements Runnable {
     private boolean shotVisible;
     private Bomb bomb;
     private boolean bombInAir;
+    private int direction;
     
     
     /**
@@ -47,6 +49,7 @@ public class Game implements Runnable {
         keyManager = new KeyManager();
         shotVisible = false;
         bombInAir = false;
+        direction = 1;
     }
 
     /**
@@ -136,10 +139,41 @@ public class Game implements Runnable {
         for(int i = 0; i < aliens.size(); i++){
             Alien alien = aliens.get(i);
             alien.tick();
+            alien.act(direction);
             if(i == alienBombIndex && !bombInAir){
                 System.out.println("Bombed");
                 bombInAir = true;
                 bomb = new Bomb(alien.getX(), alien.getY(), 30,30, false, this);
+            }
+        }
+        
+        for (Alien alien: aliens) {
+
+            int x = alien.getX();
+
+            if (x >= getWidth() - 30 && direction != -1) {
+
+                direction = -1;
+                Iterator i1 = aliens.iterator();
+
+                while (i1.hasNext()) {
+
+                    Alien a2 = (Alien) i1.next();
+                    a2.setY(a2.getY() + 15);
+                }
+            }
+
+            if (x <= 5 && direction != 1) {
+
+                direction = 1;
+
+                Iterator i2 = aliens.iterator();
+
+                while (i2.hasNext()) {
+
+                    Alien a = (Alien) i2.next();
+                    a.setY(a.getY() + 15);
+                }
             }
         }
         if(bombInAir){

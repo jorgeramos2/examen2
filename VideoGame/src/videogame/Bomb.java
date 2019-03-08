@@ -5,6 +5,7 @@
  */
 package videogame;
 import java.awt.Graphics;
+import java.awt.Rectangle;
 /**
  *
  * @author Jorge
@@ -46,6 +47,10 @@ public class Bomb extends Item{
         
             return destroyed;
         }
+    
+    public Rectangle getPerimeter(){
+        return new Rectangle(getX(), getY(), getWidth(), getHeight());
+    }
 
     @Override
     public void tick() {
