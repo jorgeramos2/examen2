@@ -5,6 +5,7 @@
  */
 package videogame;
 import java.awt.Graphics;
+import java.awt.Rectangle;
 /**
  *
  * @author Jorge
@@ -13,6 +14,8 @@ public class Alien extends Item {
     private int direction;
     private int width;
     private int height;
+    private int speedX;
+    private int speedY;
     private Game game;
     
     public Alien(int x, int y, int direction, int width, int height, Game game) {
@@ -21,6 +24,8 @@ public class Alien extends Item {
         this.width = width;
         this.height = height;
         this.game = game;
+        speedX = 2;
+        speedY = 5;
     }
 
     public int getDirection() {
@@ -47,10 +52,17 @@ public class Alien extends Item {
         this.height = height;
     }
     
+    public Rectangle getPerimeter(){
+        return new Rectangle(getX(), getY(), getWidth(), getHeight());
+    }
+    
+    public void act(int direction){
+        setX(getX() + direction);
+    }
+    
     @Override
     public void tick() {
-     
-       
+
     }
 
     @Override
