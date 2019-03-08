@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 package videogame;
-import java.awt.Rectangle;
+
 import java.awt.Graphics;
 
 /**
@@ -41,12 +41,7 @@ public class Shot extends Item{
     public void setHeight(int height) {
         this.height = height;
     }
-    public Rectangle getPerimetro() {
-        return new Rectangle(getX(), getY(), getWidth(), getHeight());
-    }
-    public boolean hitCapsule(Object obj) {
-        return obj instanceof Alien && getPerimetro().intersects(((Alien) obj).getPerimetro());
-    }
+
     @Override
     public void tick() {
         setY(getY() - speed);
@@ -54,7 +49,7 @@ public class Shot extends Item{
             game.deleteLaser();
         }
     }
-    
+
     @Override
     public void render(Graphics g) {
         g.drawImage(Assets.laser, getX(), getY(),getWidth() , getHeight(), null);
