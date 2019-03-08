@@ -17,6 +17,7 @@ public class Player extends Item{
     private int width;
     private int height;
     private Game game;
+    private int speed;
     
     public Player(int x, int y, int direction, int width, int height, Game game) {
         super(x, y);
@@ -24,6 +25,7 @@ public class Player extends Item{
         this.width = width;
         this.height = height;
         this.game = game;
+        this.speed = 10;
     }
 
     public int getDirection() {
@@ -55,19 +57,19 @@ public class Player extends Item{
         // moving player depending on flags
       
         if (game.getKeyManager().left) {
-           setX(getX() - 2);
+           setX(getX() - speed);
         }
         if (game.getKeyManager().right) {
-           setX(getX() + 2);
+           setX(getX() + speed);
         }
         
         // reset x position and y position if colision
-        if (getX() >= 358 - 2 * width) {
-            setX(358 - 2 * width);
+        if (getX() >= game.getWidth() -  width) {
+            setX(game.getWidth() -  width);
         }
-        if(getX()<=2+width)
+        if(getX()<=0)
         {
-            setX(2+width);
+            setX(0);
         }
        
     }

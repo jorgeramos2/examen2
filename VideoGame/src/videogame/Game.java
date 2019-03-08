@@ -26,6 +26,10 @@ public class Game implements Runnable {
     private Player player;          // to use a player
     private KeyManager keyManager;  // to manage the keyboard
     private LinkedList<Alien> aliens;  // to manage aliens in a Linked List
+    private Shot shot;
+    private boolean shotVisible;
+    private Bomb bomb;
+    private boolean bombInAir;
     
     
     /**
@@ -41,6 +45,8 @@ public class Game implements Runnable {
         running = false;
         aliens = new LinkedList<Alien>();
         keyManager = new KeyManager();
+        shotVisible = false;
+        bombInAir = false;
     }
 
     /**
@@ -65,11 +71,10 @@ public class Game implements Runnable {
     private void init() {
          display = new Display(title, getWidth(), getHeight());  
          Assets.init();
-         player = new Player(280, 270, 1, 15, 10, this);
+         player = new Player(getWidth() / 2, getHeight() - 100, 1, 90, 60, this);
          for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 6; j++) {
-                aliens.add(new Alien(12 + 18 * j, 12 + 18 * i,1,12,12,this));
-                
+                aliens.add(new Alien(150 + 50 * j, 50 + 50 * i,1,40,40,this));
             }
          }
          display.getJframe().addKeyListener(keyManager);
@@ -110,11 +115,48 @@ public class Game implements Runnable {
         return keyManager;
     }
     
+    public void deleteLaser(){
+        shotVisible = false;
+    }
+    
+    public void shoot(){
+        if(!shotVisible){
+            shot = new Shot(player.getX() + player.getWidth() / 2 - 5, player.getY(), this);
+            shotVisible = true;
+        }
+    }
+    
     private void tick() {
         keyManager.tick();
-        // avancing player with colision
+        // advancing player with colision
         player.tick();
+        //if there's a shot.
+        
+        int alienBombIndex = (int) (Math.random() * aliens.size());
+        for(int i = 0; i < aliens.size(); i++){
+            Alien alien = aliens.get(i);
+            alien.tick();
+            if(i == alienBombIndex && !bombInAir){
+                System.out.println("Bombed");
+                bombInAir = true;
+                bomb = new Bomb(alien.getX(), alien.getY(), 30,30, false, this);
+            }
+        }
+        if(bombInAir){
+            bomb.tick();
+            if(bomb.isDestroyed()){
+                bombInAir = false;
+            }
+        }
+        if(shotVisible){
+            shot.tick();
+        } 
+       if(keyManager.spacebar){
+            shoot();
+        }
     }
+    
+    
     
     private void render() {
         // get the buffer strategy from the display
@@ -138,6 +180,12 @@ public class Game implements Runnable {
             for (int i = 0; i < aliens.size(); i++) {
                 Alien al = aliens.get(i);
                 al.render(g);
+            }
+            if(shotVisible){
+                shot.render(g);
+            }
+            if(bombInAir){
+                bomb.render(g);
             }
             bs.show();
             g.dispose();

@@ -14,12 +14,14 @@ public class Bomb extends Item{
     private int width;
     private int height;
     private Game game;
+    private int speed;
     public Bomb(int x, int y , int width, int height,boolean destroyed, Game game) {
         super(x, y);
         this.width = width;
         this.height = height;
         this.game = game;
-        this.destroyed=true;
+        this.destroyed=false;
+        speed = 5;
     }
     public int getWidth() {
         return width;
@@ -47,13 +49,15 @@ public class Bomb extends Item{
 
     @Override
     public void tick() {
-     
-       
+        setY(getY() + speed);
+        if(getY() == game.getHeight()){
+            setDestroyed(true);
+        }
     }
 
     @Override
     public void render(Graphics g) {
-        g.drawImage(Assets.alien, getX(), getY(), getWidth(), getHeight(), null);
+        g.drawImage(Assets.bomb, getX(), getY(), getWidth(), getHeight(), null);
     }
     
 }
