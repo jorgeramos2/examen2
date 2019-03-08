@@ -8,6 +8,7 @@ package videogame;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
+import java.util.LinkedList;
 
 /**
  *
@@ -24,6 +25,7 @@ public class Game implements Runnable {
     private boolean running;        // to set the game
     private Player player;          // to use a player
     private KeyManager keyManager;  // to manage the keyboard
+    private LinkedList<Alien> aliens;  // to manage aliens in a Linked List
     
     
     /**
@@ -37,6 +39,7 @@ public class Game implements Runnable {
         this.width = width;
         this.height = height;
         running = false;
+        aliens = new LinkedList<Alien>();
         keyManager = new KeyManager();
     }
 
@@ -62,7 +65,13 @@ public class Game implements Runnable {
     private void init() {
          display = new Display(title, getWidth(), getHeight());  
          Assets.init();
-         player = new Player(0, getHeight() - 100, 1, 100, 100, this);
+         player = new Player(280, 270, 1, 15, 10, this);
+         for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 6; j++) {
+                aliens.add(new Alien(12 + 18 * j, 12 + 18 * i,1,12,12,this));
+                
+            }
+         }
          display.getJframe().addKeyListener(keyManager);
     }
     
@@ -123,7 +132,13 @@ public class Game implements Runnable {
         {
             g = bs.getDrawGraphics();
             g.drawImage(Assets.background, 0, 0, width, height, null);
+             g.setColor(Color.white);
+            g.drawLine(0, 290, 358, 290);
             player.render(g);
+            for (int i = 0; i < aliens.size(); i++) {
+                Alien al = aliens.get(i);
+                al.render(g);
+            }
             bs.show();
             g.dispose();
         }

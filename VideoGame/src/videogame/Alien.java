@@ -4,21 +4,18 @@
  * and open the template in the editor.
  */
 package videogame;
-
 import java.awt.Graphics;
-
 /**
  *
- * @author antoniomejorado
+ * @author Jorge
  */
-public class Player extends Item{
-
+public class Alien extends Item {
     private int direction;
     private int width;
     private int height;
     private Game game;
     
-    public Player(int x, int y, int direction, int width, int height, Game game) {
+    public Alien(int x, int y, int direction, int width, int height, Game game) {
         super(x, y);
         this.direction = direction;
         this.width = width;
@@ -52,28 +49,13 @@ public class Player extends Item{
 
     @Override
     public void tick() {
-        // moving player depending on flags
-      
-        if (game.getKeyManager().left) {
-           setX(getX() - 2);
-        }
-        if (game.getKeyManager().right) {
-           setX(getX() + 2);
-        }
-        
-        // reset x position and y position if colision
-        if (getX() >= 358 - 2 * width) {
-            setX(358 - 2 * width);
-        }
-        if(getX()<=2+width)
-        {
-            setX(2+width);
-        }
+     
        
     }
 
     @Override
     public void render(Graphics g) {
-        g.drawImage(Assets.player, getX(), getY(), getWidth(), getHeight(), null);
+        g.drawImage(Assets.alien, getX(), getY(), getWidth(), getHeight(), null);
     }
+    
 }

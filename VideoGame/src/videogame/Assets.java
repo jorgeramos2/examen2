@@ -14,13 +14,19 @@ import java.awt.image.BufferedImage;
 public class Assets {
     public static BufferedImage background; // to store background image
     public static BufferedImage player;     // to store the player image
+    public static BufferedImage alien;      // to store the alien image
+    public static BufferedImage bomb;       // to store the bomb image
+    public static BufferedImage laser;      // to store the laser image
 
     /**
      * initializing the images of the game
      */
     public static void init() {
-        background = ImageLoader.loadImage("/images/Background.jpg");
-        player = ImageLoader.loadImage("/images/mario.png");
+        background = ImageLoader.loadImage("/images/space.png");
+        player = ImageLoader.loadImage("/images/spaceship.png");
+        alien=ImageLoader.loadImage("/images/alien.png");
+        bomb=ImageLoader.loadImage("/images/bomb.png");
+        laser=ImageLoader.loadImage("/images/laser.png");
     }
     
 }
