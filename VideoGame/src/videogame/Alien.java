@@ -5,6 +5,8 @@
  */
 package videogame;
 import java.awt.Graphics;
+import java.awt.Rectangle;
+
 /**
  *
  * @author Jorge
@@ -52,7 +54,9 @@ public class Alien extends Item {
      
        
     }
-
+    public Rectangle getPerimetro() {
+        return new Rectangle(getX(), getY(), getWidth(), getHeight());
+    }
     @Override
     public void render(Graphics g) {
         g.drawImage(Assets.alien, getX(), getY(), getWidth(), getHeight(), null);
