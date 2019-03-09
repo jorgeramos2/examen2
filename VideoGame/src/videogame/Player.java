@@ -66,6 +66,16 @@ public class Player extends Item{
     public boolean isDead(){
         return dead;
     }
+    
+    public String toString(){
+        return "" + getX();
+    }
+    /**
+     * Method used to change player's x position. Used when laoding a past game state
+     */
+    public void load(int newXPos){
+        setX(newXPos);
+    }
 
     @Override
     public void tick() {

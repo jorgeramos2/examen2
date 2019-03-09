@@ -18,6 +18,10 @@ public class KeyManager implements KeyListener {
     public boolean left;    // flag to move left the player
     public boolean right;   // flag to move right the player
     public boolean spacebar; // flag to shoot 
+    public boolean pause;   // flag to pause game;
+    public boolean restart; // flag to restart game;
+    public boolean save;    // flag to save game;
+    public boolean load;  
     private boolean keys[];  // to store all the flags for every key
     
     public KeyManager() {
@@ -48,5 +52,9 @@ public class KeyManager implements KeyListener {
         left = keys[KeyEvent.VK_LEFT];
         right = keys[KeyEvent.VK_RIGHT];
         spacebar=keys[KeyEvent.VK_SPACE];
+        pause=keys[KeyEvent.VK_P];
+        restart=keys[KeyEvent.VK_R];
+        save=keys[KeyEvent.VK_G];
+        load=keys[KeyEvent.VK_C];
     }
 }

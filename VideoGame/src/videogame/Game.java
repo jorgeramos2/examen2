@@ -8,15 +8,24 @@ package videogame;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Random;
+import java.util.Vector;
 
 /**
  *
  * @author antoniomejorado
  */
 public class Game implements Runnable {
+
     private BufferStrategy bs;      // to have several buffers when displaying
     private Graphics g;             // to paint objects
     private Display display;        // to display in the game
@@ -35,13 +44,14 @@ public class Game implements Runnable {
     private boolean bombInAir;
     private int direction;
     private int CHANCE;
-    
-    
+    private Vector vec;
+    private String arr[];   //Array used to load game
     /**
      * to create title, width and height and set the game is still not running
+     *
      * @param title to set the title of the window
      * @param width to set the width of the window
-     * @param height  to set the height of the window
+     * @param height to set the height of the window
      */
     public Game(String title, int width, int height) {
         this.title = title;
@@ -50,15 +60,18 @@ public class Game implements Runnable {
         running = false;
         aliens = new LinkedList<Alien>();
         bombs = new LinkedList<Bomb>();
+        vec = new Vector();
         keyManager = new KeyManager();
         shotVisible = false;
         bombInAir = false;
         direction = 1;
+        shot = new Shot(0, 0, false, this);
         CHANCE = 5;
     }
 
     /**
      * To get the width of the game window
+     *
      * @return an <code>int</code> value with the width
      */
     public int getWidth() {
@@ -67,27 +80,28 @@ public class Game implements Runnable {
 
     /**
      * To get the height of the game window
+     *
      * @return an <code>int</code> value with the height
      */
     public int getHeight() {
         return height;
     }
-    
+
     /**
      * initializing the display window of the game
      */
     private void init() {
-         display = new Display(title, getWidth(), getHeight());  
-         Assets.init();
-         player = new Player(getWidth() / 2, getHeight() - 100, 1, 90, 60, this);
-         for (int i = 0; i < 4; i++) {
+        display = new Display(title, getWidth(), getHeight());
+        Assets.init();
+        player = new Player(getWidth() / 2, getHeight() - 100, 1, 90, 60, this);
+        for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 6; j++) {
-                aliens.add(new Alien(150 + 50 * j, 50 + 50 * i,1,40,40,this));
+                aliens.add(new Alien(150 + 50 * j, 50 + 50 * i, 1, 40, 40, this));
             }
-         }
-         display.getJframe().addKeyListener(keyManager);
+        }
+        display.getJframe().addKeyListener(keyManager);
     }
-    
+
     @Override
     public void run() {
         init();
@@ -108,12 +122,12 @@ public class Game implements Runnable {
             delta += (now - lastTime) / timeTick;
             // updating the last time
             lastTime = now;
-            
+
             // if delta is positive we tick the game
             if (delta >= 1) {
                 tick();
                 render();
-                delta --;
+                delta--;
             }
         }
         stop();
@@ -122,39 +136,39 @@ public class Game implements Runnable {
     public KeyManager getKeyManager() {
         return keyManager;
     }
-    
-    public void deleteLaser(){
+
+    public void deleteLaser() {
         shotVisible = false;
+        shot.setVisible(false);
     }
-    
-    public void shoot(){
-        if(!shotVisible){
-            shot = new Shot(player.getX() + player.getWidth() / 2 - 5, player.getY(), this);
+
+    public void shoot() {
+        if (!shotVisible) {
+            shot = new Shot(player.getX() + player.getWidth() / 2 - 5, player.getY(), true, this);
             shotVisible = true;
         }
     }
-   
+
     private void tick() {
         keyManager.tick();
         // advancing player with colision
         player.tick();
         //if there's a shot.
-        
+
         int alienBombIndex = (int) (Math.random() * aliens.size());
-        for(int i = 0; i < aliens.size(); i++){
+        for (int i = 0; i < aliens.size(); i++) {
             Alien alien = aliens.get(i);
             alien.tick();
-            if( shotVisible&&shot.intersectAlien(alien))
-            {
+            if (shotVisible && shot.intersectAlien(alien)) {
                 aliens.remove(i);
-                shotVisible=false;
+                shotVisible = false;
             }
-            
+
             alien.act(direction);
         }
-        
+
         //Controlar el movimiento de los aliens
-        for (Alien alien: aliens) {
+        for (Alien alien : aliens) {
             int x = alien.getX();
             if (x >= getWidth() - 30 && direction != -1) {
                 direction = -1;
@@ -173,37 +187,55 @@ public class Game implements Runnable {
                 }
             }
         }
-        
+
         //Controlar el spawning de las bombas
         Random generator = new Random();
-        for (Alien alien: aliens){
+        for (Alien alien : aliens) {
             int num = generator.nextInt(15);
             Bomb b = alien.getBomb();
-            
-            if(num == CHANCE && b.isDestroyed()){
+
+            if (num == CHANCE && b.isDestroyed()) {
                 b.setDestroyed(false);
                 b.setX(alien.getX());
                 b.setY(alien.getY());
             }
-            
+
             b.tick();
-            if(b.intersecta(player)){
+            if (b.intersecta(player)) {
                 player.die();
             }
 
         }
-        
-        if(shotVisible){
+
+        if (shotVisible) {
             shot.tick();
-        } 
-       if(!player.isDead() && keyManager.spacebar){
+        }
+        if (!player.isDead() && keyManager.spacebar) {
             shoot();
         }
-       
+
+        if (keyManager.save) {
+            try {
+
+                vec.add(player);
+                vec.add(shot);
+                //Graba el vector en el archivo.
+                grabaArchivo();
+            } catch (IOException e) {
+                System.out.println("ErroR");
+            }
+        }
+        if (keyManager.load == true) {
+            try {
+                //Graba el vector en el archivo.
+                leeArchivo();
+            } catch (IOException e) {
+                System.out.println("Error en cargar");
+            }
+        }
+
     }
-    
-    
-    
+
     private void render() {
         // get the buffer strategy from the display
         bs = display.getCanvas().getBufferStrategy();
@@ -212,33 +244,87 @@ public class Game implements Runnable {
         after clearing the Rectanlge, getting the graphic object from the 
         buffer strategy element. 
         show the graphic and dispose it to the trash system
-        */
+         */
         if (bs == null) {
             display.getCanvas().createBufferStrategy(3);
-        }
-        else
-        {
+        } else {
             g = bs.getDrawGraphics();
             g.drawImage(Assets.background, 0, 0, width, height, null);
-             g.setColor(Color.white);
+            g.setColor(Color.white);
             g.drawLine(0, 290, 358, 290);
             player.render(g);
             for (int i = 0; i < aliens.size(); i++) {
                 Alien al = aliens.get(i);
                 al.render(g);
             }
-            if(shotVisible){
+            if (shotVisible) {
                 shot.render(g);
             }
-            
-            for(Alien alien: aliens){
+
+            for (Alien alien : aliens) {
                 Bomb b = alien.getBomb();
                 b.render(g);
             }
             bs.show();
             g.dispose();
         }
-       
+
+    }
+
+    /**
+     * It saves the current state of the game on a file
+     *
+     * @throws IOException
+     */
+    public void grabaArchivo() throws IOException {
+
+        System.out.println("Grabando archivo");
+        PrintWriter fileOut = new PrintWriter(new FileWriter("src/images/save.txt"));
+        for (int i = 0; i < vec.size(); i++) {
+
+            Object x = vec.get(i);
+
+            if (x instanceof Player) {
+                x = (Player) vec.get(i);
+                fileOut.println(x.toString());
+            } else if (x instanceof Shot) {
+                System.out.println("Shot");
+                x = (Shot) vec.get(i);
+                fileOut.println(x.toString());
+            }
+        }
+
+        vec.clear();
+        fileOut.close();
+    }
+
+    public void leeArchivo() throws IOException {
+
+        BufferedReader fileIn;
+        try {
+            fileIn = new BufferedReader(new FileReader("src/images/save.txt"));
+        } catch (FileNotFoundException e) {
+            File save = new File("src/images/save.txt");
+            PrintWriter fileOut = new PrintWriter(save);
+            fileOut.println(player.getX());
+            fileOut.close();
+            fileIn = new BufferedReader(new FileReader("src/images/save.txt"));
+        }
+        //Primera linea del archivo (Datos del jugador)
+        String dato = fileIn.readLine();
+        
+        int playerXPos = (Integer.parseInt(dato));
+        player.load(playerXPos);
+        //Segunda linea del archivo (Datos del shot)
+        dato = fileIn.readLine();
+        arr = dato.split(",");
+        int shotXPos = Integer.parseInt(arr[0]);
+        int shotYPos = Integer.parseInt(arr[1]);
+        boolean shotVisibility = arr[2].equals("true") ? true : false;
+        shotVisible = shotVisibility;
+        shot.load(shotXPos,shotYPos,shotVisibility);
+        
+        fileIn.close();
     }
     
     /**
@@ -251,7 +337,7 @@ public class Game implements Runnable {
             thread.start();
         }
     }
-    
+
     /**
      * stopping the thread
      */
@@ -262,12 +348,8 @@ public class Game implements Runnable {
                 thread.join();
             } catch (InterruptedException ie) {
                 ie.printStackTrace();
-            }           
+            }
         }
     }
-
- 
-    
-
 
 }
