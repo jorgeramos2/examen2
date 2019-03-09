@@ -17,6 +17,7 @@ public class Assets {
     public static BufferedImage alien;      // to store the alien image
     public static BufferedImage bomb;       // to store the bomb image
     public static BufferedImage laser;      // to store the laser image
+    public static BufferedImage playerDie;
 
     /**
      * initializing the images of the game
@@ -27,6 +28,7 @@ public class Assets {
         alien=ImageLoader.loadImage("/images/alien.png");
         bomb=ImageLoader.loadImage("/images/bomb.png");
         laser=ImageLoader.loadImage("/images/laser.png");
+        playerDie = ImageLoader.loadImage("/images/playerDie.png");
     }
     
 }

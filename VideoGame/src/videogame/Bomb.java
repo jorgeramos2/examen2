@@ -16,13 +16,13 @@ public class Bomb extends Item{
     private int height;
     private Game game;
     private int speed;
-    public Bomb(int x, int y , int width, int height,boolean destroyed, Game game) {
+    public Bomb(int x, int y , int width, int height, Game game) {
         super(x, y);
         this.width = width;
         this.height = height;
         this.game = game;
-        this.destroyed=false;
-        speed = 5;
+        this.destroyed=true;
+        speed = 1;
     }
     public int getWidth() {
         return width;
@@ -51,18 +51,26 @@ public class Bomb extends Item{
     public Rectangle getPerimeter(){
         return new Rectangle(getX(), getY(), getWidth(), getHeight());
     }
+    
+    public boolean intersecta(Object obj){
+        return obj instanceof Player && getPerimeter().intersects(((Player) obj).getPerimeter());
+    }
 
     @Override
     public void tick() {
-        setY(getY() + speed);
-        if(getY() == game.getHeight()){
-            setDestroyed(true);
+        if (!isDestroyed()) {
+            setY(getY() + speed);
+            if (getY() == game.getHeight()) {
+                setDestroyed(true);
+            }
         }
     }
 
     @Override
     public void render(Graphics g) {
-        g.drawImage(Assets.bomb, getX(), getY(), getWidth(), getHeight(), null);
+        if(!isDestroyed()){
+            g.drawImage(Assets.bomb, getX(), getY(), getWidth(), getHeight(), null);
+        }
     }
     
 }

@@ -10,6 +10,7 @@ import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Random;
 
 /**
  *
@@ -27,11 +28,13 @@ public class Game implements Runnable {
     private Player player;          // to use a player
     private KeyManager keyManager;  // to manage the keyboard
     private LinkedList<Alien> aliens;  // to manage aliens in a Linked List
+    private LinkedList<Bomb> bombs;
     private Shot shot;
     private boolean shotVisible;
     private Bomb bomb;
     private boolean bombInAir;
     private int direction;
+    private int CHANCE;
     
     
     /**
@@ -46,10 +49,12 @@ public class Game implements Runnable {
         this.height = height;
         running = false;
         aliens = new LinkedList<Alien>();
+        bombs = new LinkedList<Bomb>();
         keyManager = new KeyManager();
         shotVisible = false;
         bombInAir = false;
         direction = 1;
+        CHANCE = 5;
     }
 
     /**
@@ -146,53 +151,52 @@ public class Game implements Runnable {
             }
             
             alien.act(direction);
-            
-            if(i == alienBombIndex && !bombInAir){
-                System.out.println("Bombed");
-                bombInAir = true;
-                bomb = new Bomb(alien.getX(), alien.getY(), 30,30, false, this);
-            }
         }
         
+        //Controlar el movimiento de los aliens
         for (Alien alien: aliens) {
-
             int x = alien.getX();
-
             if (x >= getWidth() - 30 && direction != -1) {
-
                 direction = -1;
                 Iterator i1 = aliens.iterator();
-
                 while (i1.hasNext()) {
-
                     Alien a2 = (Alien) i1.next();
                     a2.setY(a2.getY() + 15);
                 }
             }
-
             if (x <= 5 && direction != 1) {
-
                 direction = 1;
-
                 Iterator i2 = aliens.iterator();
-
                 while (i2.hasNext()) {
-
                     Alien a = (Alien) i2.next();
                     a.setY(a.getY() + 15);
                 }
             }
         }
-        if(bombInAir){
-            bomb.tick();
-            if(bomb.isDestroyed()){
-                bombInAir = false;
+        
+        //Controlar el spawning de las bombas
+        Random generator = new Random();
+        for (Alien alien: aliens){
+            int num = generator.nextInt(15);
+            Bomb b = alien.getBomb();
+            
+            if(num == CHANCE && b.isDestroyed()){
+                b.setDestroyed(false);
+                b.setX(alien.getX());
+                b.setY(alien.getY());
             }
+            
+            b.tick();
+            if(b.intersecta(player)){
+                player.die();
+            }
+
         }
+        
         if(shotVisible){
             shot.tick();
         } 
-       if(keyManager.spacebar){
+       if(!player.isDead() && keyManager.spacebar){
             shoot();
         }
        
@@ -226,8 +230,10 @@ public class Game implements Runnable {
             if(shotVisible){
                 shot.render(g);
             }
-            if(bombInAir){
-                bomb.render(g);
+            
+            for(Alien alien: aliens){
+                Bomb b = alien.getBomb();
+                b.render(g);
             }
             bs.show();
             g.dispose();
