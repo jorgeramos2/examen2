@@ -92,6 +92,16 @@ public class Game implements Runnable {
         return height;
     }
 
+    public int getDirection() {
+        return direction;
+    }
+
+    public void setDirection(int direction) {
+        this.direction = direction;
+    }
+    
+    
+
     /**
      * initializing the display window of the game
      */
@@ -181,6 +191,7 @@ public class Game implements Runnable {
                 int x = alien.getX();
                 if (x >= getWidth() - 30 && direction != -1) {
                     direction = -1;
+                    alien.setDirection(-1);
                     Iterator i1 = aliens.iterator();
                     while (i1.hasNext()) {
                         Alien a2 = (Alien) i1.next();
@@ -189,6 +200,7 @@ public class Game implements Runnable {
                 }
                 if (x <= 5 && direction != 1) {
                     direction = 1;
+                    alien.setDirection(1);
                     Iterator i2 = aliens.iterator();
                     while (i2.hasNext()) {
                         Alien a = (Alien) i2.next();
@@ -229,6 +241,9 @@ public class Game implements Runnable {
 
                     vec.add(player);
                     vec.add(shot);
+                    for(Alien alien: aliens){
+                        vec.add(alien);
+                    }
                     //Graba el vector en el archivo.
                     grabaArchivo();
                 } catch (IOException e) {
@@ -312,8 +327,10 @@ public class Game implements Runnable {
                 x = (Player) vec.get(i);
                 fileOut.println(x.toString());
             } else if (x instanceof Shot) {
-                System.out.println("Shot");
                 x = (Shot) vec.get(i);
+                fileOut.println(x.toString());
+            } else if (x instanceof Alien){
+                x = (Alien) vec.get(i);
                 fileOut.println(x.toString());
             }
         }
@@ -347,7 +364,23 @@ public class Game implements Runnable {
         boolean shotVisibility = arr[2].equals("true") ? true : false;
         shotVisible = shotVisibility;
         shot.load(shotXPos,shotYPos,shotVisibility);
-        
+        //Lineas de los Aliens
+        dato = fileIn.readLine();
+        aliens.clear();
+        while (dato != null) {
+            arr = dato.split(",");
+            int alienX = Integer.parseInt(arr[0]);
+            int alienY = Integer.parseInt(arr[1]);
+            int alienDirection = Integer.parseInt(arr[2]);
+            direction = alienDirection;
+            boolean bombDestroyed = Boolean.parseBoolean(arr[3]);
+            int bombX = Integer.parseInt(arr[4]);
+            int bombY = Integer.parseInt(arr[5]);
+            Alien alien = new Alien(alienX, alienY, alienDirection, 40,40, this);
+            alien.loadBomb(bombDestroyed, bombX, bombY);
+            aliens.add(alien);
+            dato = fileIn.readLine();
+        }
         fileIn.close();
     }
     

@@ -66,6 +66,26 @@ public class Alien extends Item {
         return bomb;
     }
     
+    public void setBomb(Bomb bomb){
+        this.bomb = bomb;
+    }
+    
+    public String toString(){
+        return ""+getX()+","+getY()+","+game.getDirection()+","+getBomb().isDestroyed() + ","+getBomb().getX() + ","+getBomb().getY();
+    }
+    
+    /**
+     * Method used to update the Alien's bomb. Used when loading a previous game state.
+     * @param bombDestroyed
+     * @param bombX
+     * @param bombY 
+     */
+    
+    public void loadBomb(boolean bombDestroyed, int bombX, int bombY){
+        Bomb b = getBomb();
+        b.load(bombDestroyed, bombX, bombY);
+    }
+    
     public void tick() {
 
     }

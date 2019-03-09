@@ -55,6 +55,18 @@ public class Bomb extends Item{
     public boolean intersecta(Object obj){
         return obj instanceof Player && getPerimeter().intersects(((Player) obj).getPerimeter());
     }
+    
+    /**
+     * Method used to update the bomb. Used when laoding a previous game state
+     * @param isDestroyed
+     * @param posX
+     * @param posY 
+     */
+    public void load(boolean isDestroyed, int posX, int posY){
+        setDestroyed(isDestroyed);
+        setX(posX);
+        setY(posY);
+    }
 
     @Override
     public void tick() {
