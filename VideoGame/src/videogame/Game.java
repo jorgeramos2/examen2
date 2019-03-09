@@ -128,7 +128,7 @@ public class Game implements Runnable {
             shotVisible = true;
         }
     }
-    
+   
     private void tick() {
         keyManager.tick();
         // advancing player with colision
@@ -139,7 +139,14 @@ public class Game implements Runnable {
         for(int i = 0; i < aliens.size(); i++){
             Alien alien = aliens.get(i);
             alien.tick();
+            if( shotVisible&&shot.intersectAlien(alien))
+            {
+                aliens.remove(i);
+                shotVisible=false;
+            }
+            
             alien.act(direction);
+            
             if(i == alienBombIndex && !bombInAir){
                 System.out.println("Bombed");
                 bombInAir = true;
@@ -188,6 +195,7 @@ public class Game implements Runnable {
        if(keyManager.spacebar){
             shoot();
         }
+       
     }
     
     

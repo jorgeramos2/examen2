@@ -59,12 +59,13 @@ public class Alien extends Item {
     public void act(int direction){
         setX(getX() + direction);
     }
-    
+     
+
     @Override
     public void tick() {
 
     }
-
+    
     @Override
     public void render(Graphics g) {
         g.drawImage(Assets.alien, getX(), getY(), getWidth(), getHeight(), null);
