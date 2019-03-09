@@ -6,6 +6,7 @@
 package videogame;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 import java.io.BufferedReader;
@@ -46,6 +47,9 @@ public class Game implements Runnable {
     private int CHANCE;
     private Vector vec;
     private String arr[];   //Array used to load game
+    private boolean gameOver;
+    
+    
     /**
      * to create title, width and height and set the game is still not running
      *
@@ -67,6 +71,7 @@ public class Game implements Runnable {
         direction = 1;
         shot = new Shot(0, 0, false, this);
         CHANCE = 5;
+        gameOver=true;
     }
 
     /**
@@ -150,92 +155,107 @@ public class Game implements Runnable {
     }
 
     private void tick() {
-        keyManager.tick();
-        // advancing player with colision
-        player.tick();
-        //if there's a shot.
+        if (gameOver) {
+            keyManager.tick();
+            // advancing player with colision
+            player.tick();
+            //if there's a shot.
 
-        int alienBombIndex = (int) (Math.random() * aliens.size());
-        for (int i = 0; i < aliens.size(); i++) {
-            Alien alien = aliens.get(i);
-            alien.tick();
-            if (shotVisible && shot.intersectAlien(alien)) {
-                aliens.remove(i);
-                shotVisible = false;
+            int alienBombIndex = (int) (Math.random() * aliens.size());
+            for (int i = 0; i < aliens.size(); i++) {
+                Alien alien = aliens.get(i);
+                alien.tick();
+                if (shotVisible && shot.intersectAlien(alien)) {
+                    aliens.remove(i);
+                    shotVisible = false;
+                    if (aliens.size() == 0) {
+                        gameOver = false;
+                    }
+                }
+
+                alien.act(direction);
             }
 
-            alien.act(direction);
-        }
-
-        //Controlar el movimiento de los aliens
-        for (Alien alien : aliens) {
-            int x = alien.getX();
-            if (x >= getWidth() - 30 && direction != -1) {
-                direction = -1;
-                Iterator i1 = aliens.iterator();
-                while (i1.hasNext()) {
-                    Alien a2 = (Alien) i1.next();
-                    a2.setY(a2.getY() + 15);
+            //Controlar el movimiento de los aliens
+            for (Alien alien : aliens) {
+                int x = alien.getX();
+                if (x >= getWidth() - 30 && direction != -1) {
+                    direction = -1;
+                    Iterator i1 = aliens.iterator();
+                    while (i1.hasNext()) {
+                        Alien a2 = (Alien) i1.next();
+                        a2.setY(a2.getY() + 15);
+                    }
+                }
+                if (x <= 5 && direction != 1) {
+                    direction = 1;
+                    Iterator i2 = aliens.iterator();
+                    while (i2.hasNext()) {
+                        Alien a = (Alien) i2.next();
+                        a.setY(a.getY() + 15);
+                    }
                 }
             }
-            if (x <= 5 && direction != 1) {
-                direction = 1;
-                Iterator i2 = aliens.iterator();
-                while (i2.hasNext()) {
-                    Alien a = (Alien) i2.next();
-                    a.setY(a.getY() + 15);
+
+            //Controlar el spawning de las bombas
+            Random generator = new Random();
+            for (Alien alien : aliens) {
+                int num = generator.nextInt(15);
+                Bomb b = alien.getBomb();
+
+                if (num == CHANCE && b.isDestroyed()) {
+                    b.setDestroyed(false);
+                    b.setX(alien.getX());
+                    b.setY(alien.getY());
+                }
+
+                b.tick();
+                if (b.intersecta(player)) {
+                    player.die();
+                    gameOver = false;
+                }
+
+            }
+
+            if (shotVisible) {
+                shot.tick();
+            }
+            if (!player.isDead() && keyManager.spacebar) {
+                shoot();
+            }
+
+            if (keyManager.save) {
+                try {
+
+                    vec.add(player);
+                    vec.add(shot);
+                    //Graba el vector en el archivo.
+                    grabaArchivo();
+                } catch (IOException e) {
+                    System.out.println("ErroR");
                 }
             }
-        }
-
-        //Controlar el spawning de las bombas
-        Random generator = new Random();
-        for (Alien alien : aliens) {
-            int num = generator.nextInt(15);
-            Bomb b = alien.getBomb();
-
-            if (num == CHANCE && b.isDestroyed()) {
-                b.setDestroyed(false);
-                b.setX(alien.getX());
-                b.setY(alien.getY());
-            }
-
-            b.tick();
-            if (b.intersecta(player)) {
-                player.die();
+            if (keyManager.load == true) {
+                try {
+                    //Graba el vector en el archivo.
+                    leeArchivo();
+                } catch (IOException e) {
+                    System.out.println("Error en cargar");
+                }
             }
 
         }
+      }
+       
+    public void gameOver() {
 
-        if (shotVisible) {
-            shot.tick();
-        }
-        if (!player.isDead() && keyManager.spacebar) {
-            shoot();
-        }
-
-        if (keyManager.save) {
-            try {
-
-                vec.add(player);
-                vec.add(shot);
-                //Graba el vector en el archivo.
-                grabaArchivo();
-            } catch (IOException e) {
-                System.out.println("ErroR");
-            }
-        }
-        if (keyManager.load == true) {
-            try {
-                //Graba el vector en el archivo.
-                leeArchivo();
-            } catch (IOException e) {
-                System.out.println("Error en cargar");
-            }
-        }
-
+        g.setColor(Color.red);
+        Font small = new Font("Helvetica", Font.BOLD, 30);
+        g.setFont(small);
+        g.drawString("GAME OVER", 250, 300);
     }
 
+    
     private void render() {
         // get the buffer strategy from the display
         bs = display.getCanvas().getBufferStrategy();
@@ -261,7 +281,11 @@ public class Game implements Runnable {
                 shot.render(g);
             }
 
-            for (Alien alien : aliens) {
+            if(gameOver==false)
+            {
+                gameOver();
+            }
+            for(Alien alien: aliens){
                 Bomb b = alien.getBomb();
                 b.render(g);
             }
