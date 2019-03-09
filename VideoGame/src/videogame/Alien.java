@@ -66,11 +66,10 @@ public class Alien extends Item {
         return bomb;
     }
     
-    @Override
     public void tick() {
 
     }
-
+    
     @Override
     public void render(Graphics g) {
         g.drawImage(Assets.alien, getX(), getY(), getWidth(), getHeight(), null);

@@ -19,6 +19,7 @@ public class Player extends Item{
     private int height;
     private Game game;
     private int speed;
+    private boolean dead;
     
     public Player(int x, int y, int direction, int width, int height, Game game) {
         super(x, y);
@@ -27,6 +28,7 @@ public class Player extends Item{
         this.height = height;
         this.game = game;
         this.speed = 10;
+        dead = false;
     }
 
     public int getDirection() {
@@ -56,31 +58,44 @@ public class Player extends Item{
     public Rectangle getPerimeter(){
         return new Rectangle(getX(), getY(), getWidth(), getHeight());
     }
+    
+    public void die(){
+        dead = true;
+    }
+    
+    public boolean isDead(){
+        return dead;
+    }
 
     @Override
     public void tick() {
         // moving player depending on flags
-      
-        if (game.getKeyManager().left) {
-           setX(getX() - speed);
+
+        if (!dead) {
+            if (game.getKeyManager().left) {
+                setX(getX() - speed);
+            }
+            if (game.getKeyManager().right) {
+                setX(getX() + speed);
+            }
+
+            // reset x position and y position if colision
+            if (getX() >= game.getWidth() - width) {
+                setX(game.getWidth() - width);
+            }
+            if (getX() <= 0) {
+                setX(0);
+            }
         }
-        if (game.getKeyManager().right) {
-           setX(getX() + speed);
-        }
-        
-        // reset x position and y position if colision
-        if (getX() >= game.getWidth() -  width) {
-            setX(game.getWidth() -  width);
-        }
-        if(getX()<=0)
-        {
-            setX(0);
-        }
-       
+
     }
 
     @Override
     public void render(Graphics g) {
-        g.drawImage(Assets.player, getX(), getY(), getWidth(), getHeight(), null);
+        if(dead){
+            g.drawImage(Assets.playerDie, getX(), getY(), getWidth(), getHeight(), null);
+        } else {
+            g.drawImage(Assets.player, getX(), getY(), getWidth(), getHeight(), null);
+        }
     }
 }

@@ -51,6 +51,10 @@ public class Bomb extends Item{
     public Rectangle getPerimeter(){
         return new Rectangle(getX(), getY(), getWidth(), getHeight());
     }
+    
+    public boolean intersecta(Object obj){
+        return obj instanceof Player && getPerimeter().intersects(((Player) obj).getPerimeter());
+    }
 
     @Override
     public void tick() {
