@@ -6,6 +6,7 @@
 package videogame;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 import java.util.Iterator;
@@ -35,6 +36,7 @@ public class Game implements Runnable {
     private boolean bombInAir;
     private int direction;
     private int CHANCE;
+    private boolean gameOver;
     
     
     /**
@@ -55,6 +57,7 @@ public class Game implements Runnable {
         bombInAir = false;
         direction = 1;
         CHANCE = 5;
+        gameOver=true;
     }
 
     /**
@@ -135,7 +138,9 @@ public class Game implements Runnable {
     }
    
     private void tick() {
-        keyManager.tick();
+      if(gameOver)
+      {
+            keyManager.tick();
         // advancing player with colision
         player.tick();
         //if there's a shot.
@@ -148,6 +153,10 @@ public class Game implements Runnable {
             {
                 aliens.remove(i);
                 shotVisible=false;
+                if(aliens.size()==0)
+                {
+                    gameOver=false;
+                }
             }
             
             alien.act(direction);
@@ -189,6 +198,7 @@ public class Game implements Runnable {
             b.tick();
             if(b.intersecta(player)){
                 player.die();
+                gameOver=false;
             }
 
         }
@@ -199,9 +209,16 @@ public class Game implements Runnable {
        if(!player.isDead() && keyManager.spacebar){
             shoot();
         }
+      }
        
     }
-    
+        public void gameOver() {
+
+        g.setColor(Color.red);
+        Font small = new Font("Helvetica", Font.BOLD, 30);
+        g.setFont(small);
+        g.drawString("GAME OVER", 250, 300);
+    }
     
     
     private void render() {
@@ -230,7 +247,10 @@ public class Game implements Runnable {
             if(shotVisible){
                 shot.render(g);
             }
-            
+            if(gameOver==false)
+            {
+                gameOver();
+            }
             for(Alien alien: aliens){
                 Bomb b = alien.getBomb();
                 b.render(g);
