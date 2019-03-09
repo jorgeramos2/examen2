@@ -21,7 +21,7 @@ public class KeyManager implements KeyListener {
     public boolean pause;   // flag to pause game;
     public boolean restart; // flag to restart game;
     public boolean save;    // flag to save game;
-    public boolean load;  
+    public boolean load;    // flag to load game  
     private boolean keys[];  // to store all the flags for every key
     
     public KeyManager() {

@@ -165,8 +165,11 @@ public class Game implements Runnable {
     }
 
     private void tick() {
-        if (gameOver) {
-            keyManager.tick();
+        keyManager.tick();
+        if(keyManager.pause==false)
+        {
+           if (gameOver) {
+           
             // advancing player with colision
             player.tick();
             //if there's a shot.
@@ -259,7 +262,9 @@ public class Game implements Runnable {
                 }
             }
 
+        } 
         }
+        
       }
        
     public void gameOver() {
@@ -268,6 +273,21 @@ public class Game implements Runnable {
         Font small = new Font("Helvetica", Font.BOLD, 30);
         g.setFont(small);
         g.drawString("GAME OVER", 250, 300);
+        g.drawString("PRESS R TO RESTART GAME", 150,400 );
+        if(keyManager.restart==true)
+        {
+            gameOver=true;
+           aliens.clear();
+            Assets.init();
+            player = new Player(getWidth() / 2, getHeight() - 100, 1, 90, 60, this);
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 6; j++) {
+                aliens.add(new Alien(150 + 50 * j, 50 + 50 * i, 1, 40, 40, this));
+            }
+        }
+        
+            
+        }
     }
 
     
@@ -303,6 +323,13 @@ public class Game implements Runnable {
             for(Alien alien: aliens){
                 Bomb b = alien.getBomb();
                 b.render(g);
+            }
+            if(keyManager.pause)
+            {
+               g.setColor(Color.red);
+                Font small = new Font("Helvetica", Font.BOLD, 30);
+                g.setFont(small);
+                g.drawString("PAUSE", 250, 300); 
             }
             bs.show();
             g.dispose();
