@@ -261,6 +261,13 @@ public class Game implements Runnable {
                     System.out.println("Error en cargar");
                 }
             }
+           for(int i=0;i<aliens.size();i++)
+           {
+               if(aliens.get(i).getY()>500)
+               {
+                   gameOver=false;
+               }
+           }
 
         } 
         }
@@ -278,7 +285,9 @@ public class Game implements Runnable {
         {
             gameOver=true;
            aliens.clear();
+           shotVisible=false;
             Assets.init();
+          
             player = new Player(getWidth() / 2, getHeight() - 100, 1, 90, 60, this);
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 6; j++) {
@@ -286,7 +295,7 @@ public class Game implements Runnable {
             }
         }
         
-            
+        
         }
     }
 
@@ -306,7 +315,7 @@ public class Game implements Runnable {
             g = bs.getDrawGraphics();
             g.drawImage(Assets.background, 0, 0, width, height, null);
             g.setColor(Color.white);
-            g.drawLine(0, 290, 358, 290);
+            g.drawLine(0, 500, 595, 500);
             player.render(g);
             for (int i = 0; i < aliens.size(); i++) {
                 Alien al = aliens.get(i);
