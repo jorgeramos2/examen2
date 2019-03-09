@@ -6,6 +6,8 @@
 package videogame;
 
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 import java.util.Iterator;
@@ -32,6 +34,7 @@ public class Game implements Runnable {
     private Bomb bomb;
     private boolean bombInAir;
     private int direction;
+    private boolean gameOver;
     
     
     /**
@@ -50,6 +53,7 @@ public class Game implements Runnable {
         shotVisible = false;
         bombInAir = false;
         direction = 1;
+        gameOver=true;
     }
 
     /**
@@ -130,7 +134,9 @@ public class Game implements Runnable {
     }
    
     private void tick() {
-        keyManager.tick();
+     if(gameOver)
+     {
+      keyManager.tick();
         // advancing player with colision
         player.tick();
         //if there's a shot.
@@ -143,6 +149,11 @@ public class Game implements Runnable {
             {
                 aliens.remove(i);
                 shotVisible=false;
+                if(aliens.size()==0)
+                {
+                    
+                    gameOver=false;
+                }
             }
             
             alien.act(direction);
@@ -194,10 +205,19 @@ public class Game implements Runnable {
         } 
        if(keyManager.spacebar){
             shoot();
-        }
+        }   
+     }
+        
        
     }
-    
+    public void gameOver() {
+
+        g.setColor(Color.red);
+        Font small = new Font("Helvetica", Font.BOLD, 30);
+        g.setFont(small);
+        g.drawString("GAME OVER", 250, 300);
+    }
+
     
     
     private void render() {
@@ -215,6 +235,7 @@ public class Game implements Runnable {
         else
         {
             g = bs.getDrawGraphics();
+           
             g.drawImage(Assets.background, 0, 0, width, height, null);
              g.setColor(Color.white);
             g.drawLine(0, 290, 358, 290);
@@ -228,6 +249,10 @@ public class Game implements Runnable {
             }
             if(bombInAir){
                 bomb.render(g);
+            }
+            if(gameOver==false)
+            {
+                gameOver();
             }
             bs.show();
             g.dispose();
@@ -258,6 +283,10 @@ public class Game implements Runnable {
                 ie.printStackTrace();
             }           
         }
+    }
+
+    private FontMetrics getFontMetrics(Font small) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
  
