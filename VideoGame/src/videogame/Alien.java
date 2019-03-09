@@ -17,6 +17,7 @@ public class Alien extends Item {
     private int speedX;
     private int speedY;
     private Game game;
+    private Bomb bomb;
     
     public Alien(int x, int y, int direction, int width, int height, Game game) {
         super(x, y);
@@ -26,6 +27,7 @@ public class Alien extends Item {
         this.game = game;
         speedX = 2;
         speedY = 5;
+        bomb = new Bomb(x,y, 50,50, game);
     }
 
     public int getDirection() {
@@ -58,6 +60,10 @@ public class Alien extends Item {
     
     public void act(int direction){
         setX(getX() + direction);
+    }
+    
+    public Bomb getBomb(){
+        return bomb;
     }
     
     @Override
