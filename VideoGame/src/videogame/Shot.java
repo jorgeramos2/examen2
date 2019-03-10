@@ -87,7 +87,6 @@ public class Shot extends Item{
     @Override
     public void tick() {
         if(isVisible()){
-            System.out.println("Gojng to tick shot");
             animation.tick();
             setY(getY() - speed);
             if (getY() == 0) {

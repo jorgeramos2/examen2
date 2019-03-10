@@ -21,6 +21,13 @@ public class Assets {
     public static BufferedImage playerBlast[];
     public static BufferedImage alienBlast[];
     public static BufferedImage explosion[];
+    
+    
+    //Sounds
+    
+    public static SoundClip shotSound;
+    public static SoundClip hitSound;
+    public static SoundClip deathSound;
 
     /**
      * initializing the images of the game
@@ -43,6 +50,13 @@ public class Assets {
             alienBlast[i-1] = ImageLoader.loadImage("/images/red" + Integer.toString(i)+".png");
             explosion[i-1] = ImageLoader.loadImage("/images/explosion" + Integer.toString(i)+".png");
         }
+        
+        
+        //Sounds
+        
+        shotSound = new SoundClip("/sounds/playerShoot.wav");
+        hitSound = new SoundClip("/sounds/hit.wav");
+        deathSound = new SoundClip("/sounds/death.wav");
         
         
     }

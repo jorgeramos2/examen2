@@ -194,6 +194,7 @@ public class Game implements Runnable {
                     Alien alien = aliens.get(i);
                     alien.tick();
                     if (shotVisible && shot.intersectAlien(alien)) {
+                        Assets.hitSound.play();
                         alien.setDying(true);
                         alien.setDeadCounter(6);
                         shotVisible = false;
@@ -246,6 +247,7 @@ public class Game implements Runnable {
 
                     b.tick();
                     if (b.intersecta(player)) {
+                        Assets.deathSound.play();
                         player.die();
                         gameOver = false;
                     }
@@ -257,6 +259,7 @@ public class Game implements Runnable {
                 }
                 if (!player.isDead() && keyManager.spacebar) {
                     shoot();
+                    Assets.shotSound.play();
                 }
                 for (int i = 0; i < aliens.size(); i++) {
                     if (aliens.get(i).getY() > 500) {
@@ -361,13 +364,18 @@ public class Game implements Runnable {
                 Bomb b = alien.getBomb();
                 b.render(g);
             }
+            g.setColor(Color.red);
+            Font small = new Font("Helvetica", Font.BOLD, 20);
+            g.setFont(small);
+            g.drawString("G - Guardar", 10, 50);
+            g.drawString("C - Cargar", 10, 70);
+            g.drawString("P - Pausa", 10, 90);
+
             if(keyManager.pause)
             {
-               g.setColor(Color.red);
-                Font small = new Font("Helvetica", Font.BOLD, 30);
-                g.setFont(small);
-                g.drawString("PAUSE", 250, 300);
+                g.drawString("PAUSA", 250, 300);
             }
+                        
             bs.show();
             g.dispose();
         }
