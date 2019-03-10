@@ -17,6 +17,14 @@ public class Bomb extends Item{
     private Game game;
     private int speed;
     private Animation animation;
+    /**
+     * 
+     * @param x
+     * @param y
+     * @param width
+     * @param height
+     * @param game 
+     */
     public Bomb(int x, int y , int width, int height, Game game) {
         super(x, y);
         this.width = width;
@@ -26,34 +34,62 @@ public class Bomb extends Item{
         this.animation = new Animation(Assets.alienBlast, 100);
         speed = 1;
     }
+    /**
+     * Get the width of the bomb
+     * @return  an <code>int</code> width of bomb
+     */
     public int getWidth() {
         return width;
     }
-
+    /**
+     * Get the height of the bomb
+     * @return  an <code>int</code> height of bomb
+     */
     public int getHeight() {
         return height;
     }
+    /**
+     * Set the width of the bomb
+     * @param width 
+     */
     public void setWidth(int width) {
         this.width = width;
     }
-
+    /**
+     * Set the height of the bomb
+     * @param height 
+     */
     public void setHeight(int height) {
         this.height = height;
     }
+    /**
+     * Set if the bomb is destroyed
+     * @param destroyed 
+     */
      public void setDestroyed(boolean destroyed) {
         
             this.destroyed = destroyed;
         }
-
+     /**
+      * Get if the bomb is destroyed
+      * @return 
+      */
     public boolean isDestroyed() {
         
             return destroyed;
         }
-    
+    /**
+     * Get the perimeter
+     * @return  an <code>Rectangle</code> perimeter
+     */
     public Rectangle getPerimeter(){
         return new Rectangle(getX(), getY(), getWidth(), getHeight());
     }
-    
+    /**
+     * Check collsion with player
+     * @param obj
+     * @return 
+     */
     public boolean intersecta(Object obj){
         return obj instanceof Player && getPerimeter().intersects(((Player) obj).getPerimeter());
     }
@@ -80,7 +116,10 @@ public class Bomb extends Item{
             }
         }
     }
-
+/**
+ * Render bomb
+ * @param g 
+ */
     @Override
     public void render(Graphics g) {
         if(!isDestroyed()){

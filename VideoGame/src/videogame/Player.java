@@ -20,7 +20,15 @@ public class Player extends Item{
     private Game game;
     private int speed;
     private boolean dead;
-    
+    /**
+     * 
+     * @param x position 
+     * @param y postion
+     * @param direction
+     * @param width of player
+     * @param height of player
+     * @param game 
+     */
     public Player(int x, int y, int direction, int width, int height, Game game) {
         super(x, y);
         this.direction = direction;
@@ -30,31 +38,52 @@ public class Player extends Item{
         this.speed = 10;
         dead = false;
     }
-
+/**
+ * Get direction of player
+ * @return  an <code>int</code> value with the direction
+ */
     public int getDirection() {
         return direction;
     }
-
+/**
+ * Get width of player
+ * @return  an <code>int</code> value with the width
+ */
     public int getWidth() {
         return width;
     }
-
+/**
+ * Get the height of a player
+ * @return  an <code>int</code> value with the height
+ */
     public int getHeight() {
         return height;
     }
-
+/**
+ * Set the direction of player
+ * @param direction 
+ */
     public void setDirection(int direction) {
         this.direction = direction;
     }
-
+/**
+ * Set the width of player
+ * @param width 
+ */
     public void setWidth(int width) {
         this.width = width;
     }
-
+/**
+ * Set the height of player
+ * @param height 
+ */
     public void setHeight(int height) {
         this.height = height;
     }
-    
+ /**
+  * Get the perimeter 
+  * @return  an <code>Rectangle</code> value with the perimeter
+  */   
     public Rectangle getPerimeter(){
         return new Rectangle(getX(), getY(), getWidth(), getHeight());
     }
@@ -70,7 +99,10 @@ public class Player extends Item{
     public void revive(){
         dead = false;
     }
-    
+   /**
+    * Conver int values to string
+    * @return 
+    */ 
     public String toString(){
         return "" + getX();
     }
@@ -103,7 +135,10 @@ public class Player extends Item{
         }
 
     }
-
+/**
+ * Render player
+ * @param g 
+ */
     @Override
     public void render(Graphics g) {
         if(dead){

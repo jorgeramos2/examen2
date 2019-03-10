@@ -38,17 +38,17 @@ public class Game implements Runnable {
     private Player player;          // to use a player
     private KeyManager keyManager;  // to manage the keyboard
     private LinkedList<Alien> aliens;  // to manage aliens in a Linked List
-    private LinkedList<Bomb> bombs;
-    private Shot shot;
-    private boolean shotVisible;
-    private Bomb bomb;
-    private boolean bombInAir;
-    private int direction;
-    private int CHANCE;
-    private Vector vec;
+    private LinkedList<Bomb> bombs;   // to manage bombs in Linked List
+    private Shot shot;                // to manage shot
+    private boolean shotVisible;    // to know if shot is visible
+    private Bomb bomb;              //to manage bomb
+    private boolean bombInAir;     // to know if bomb is in air
+    private int direction;          // manage the direction
+    private int CHANCE;         // manage probability of an event
+    private Vector vec;         // vector to manage save
     private String arr[];   //Array used to load game
-    private boolean gameOver;
-    private boolean inPause;
+    private boolean gameOver; // Manage when the game endas
+    private boolean inPause;    // Manage when the game is in pause
     
     /**
      * to create title, width and height and set the game is still not running
@@ -92,11 +92,17 @@ public class Game implements Runnable {
     public int getHeight() {
         return height;
     }
-
+/**
+ * Get the direction 
+ * @return  an <code>int</code> direction of game
+ */
     public int getDirection() {
         return direction;
     }
-
+/**
+ * Set the direction
+ * @param direction 
+ */
     public void setDirection(int direction) {
         this.direction = direction;
     }
@@ -148,23 +154,32 @@ public class Game implements Runnable {
         }
         stop();
     }
-
+/**
+ * Get keyManager
+ * @return  an <code>KeyManager</code>
+ */
     public KeyManager getKeyManager() {
         return keyManager;
     }
-
+/**
+ * Deltee laser from screen
+ */
     public void deleteLaser() {
         shotVisible = false;
         shot.setVisible(false);
     }
-
+/**
+ * Make player shoot
+ */
     public void shoot() {
         if (!shotVisible) {
             shot = new Shot(player.getX() + player.getWidth() / 2 - 5, player.getY(), true, this);
             shotVisible = true;
         }
     }
-
+/**
+ * Tick for the game 
+ */
     private void tick() {
         keyManager.tick();
         if (keyManager.pause == false) {
@@ -179,8 +194,13 @@ public class Game implements Runnable {
                     Alien alien = aliens.get(i);
                     alien.tick();
                     if (shotVisible && shot.intersectAlien(alien)) {
-                        aliens.remove(i);
+                        alien.setDying(true);
+                        alien.setDeadCounter(6);
                         shotVisible = false;
+                    }
+                    
+                    if(alien.isDead()){
+                        aliens.remove(i);
                         if (aliens.size() == 0) {
                             gameOver = false;
                         }
@@ -246,7 +266,7 @@ public class Game implements Runnable {
 
             }
         }
-
+        /// Save game in file
         if (keyManager.save) {
             try {
 
@@ -268,6 +288,7 @@ public class Game implements Runnable {
                 System.out.println("Error");
             }
         }
+        /// Load game
         if (keyManager.load == true) {
             try {
                 //Graba el vector en el archivo.
@@ -278,7 +299,9 @@ public class Game implements Runnable {
         }
 
     }
-       
+    /**
+     * Manages action after game over
+     */   
     public void gameOver() {
 
         g.setColor(Color.red);
@@ -381,7 +404,10 @@ public class Game implements Runnable {
         vec.clear();
         fileOut.close();
     }
-
+/**
+ * Reads file
+ * @throws IOException 
+ */
     public void leeArchivo() throws IOException {
 
         BufferedReader fileIn;
