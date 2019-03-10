@@ -20,6 +20,7 @@ public class Assets {
     public static BufferedImage playerDie;
     public static BufferedImage playerBlast[];
     public static BufferedImage alienBlast[];
+    public static BufferedImage explosion[];
 
     /**
      * initializing the images of the game
@@ -33,12 +34,14 @@ public class Assets {
         playerDie = ImageLoader.loadImage("/images/playerDie.png");
         
         
-        //Sprites for player and alien blast
+        //Sprites for player and alien blast and explosion
         playerBlast = new BufferedImage[6];
         alienBlast = new BufferedImage[6];
+        explosion = new BufferedImage[6];
         for(int i = 1; i <= 6; i++){
             playerBlast[i-1] = ImageLoader.loadImage("/images/blue" + Integer.toString(i)+".png");
             alienBlast[i-1] = ImageLoader.loadImage("/images/red" + Integer.toString(i)+".png");
+            explosion[i-1] = ImageLoader.loadImage("/images/explosion" + Integer.toString(i)+".png");
         }
         
         

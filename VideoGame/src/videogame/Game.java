@@ -179,8 +179,13 @@ public class Game implements Runnable {
                     Alien alien = aliens.get(i);
                     alien.tick();
                     if (shotVisible && shot.intersectAlien(alien)) {
-                        aliens.remove(i);
+                        alien.setDying(true);
+                        alien.setDeadCounter(6);
                         shotVisible = false;
+                    }
+                    
+                    if(alien.isDead()){
+                        aliens.remove(i);
                         if (aliens.size() == 0) {
                             gameOver = false;
                         }
