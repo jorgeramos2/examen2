@@ -18,6 +18,8 @@ public class Assets {
     public static BufferedImage bomb;       // to store the bomb image
     public static BufferedImage laser;      // to store the laser image
     public static BufferedImage playerDie;
+    public static BufferedImage playerBlast[];
+    public static BufferedImage alienBlast[];
 
     /**
      * initializing the images of the game
@@ -29,6 +31,17 @@ public class Assets {
         bomb=ImageLoader.loadImage("/images/bomb.png");
         laser=ImageLoader.loadImage("/images/laser.png");
         playerDie = ImageLoader.loadImage("/images/playerDie.png");
+        
+        
+        //Sprites for player and alien blast
+        playerBlast = new BufferedImage[6];
+        alienBlast = new BufferedImage[6];
+        for(int i = 1; i <= 6; i++){
+            playerBlast[i-1] = ImageLoader.loadImage("/images/blue" + Integer.toString(i)+".png");
+            alienBlast[i-1] = ImageLoader.loadImage("/images/red" + Integer.toString(i)+".png");
+        }
+        
+        
     }
     
 }

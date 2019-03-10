@@ -16,12 +16,14 @@ public class Bomb extends Item{
     private int height;
     private Game game;
     private int speed;
+    private Animation animation;
     public Bomb(int x, int y , int width, int height, Game game) {
         super(x, y);
         this.width = width;
         this.height = height;
         this.game = game;
         this.destroyed=true;
+        this.animation = new Animation(Assets.alienBlast, 100);
         speed = 1;
     }
     public int getWidth() {
@@ -71,6 +73,7 @@ public class Bomb extends Item{
     @Override
     public void tick() {
         if (!isDestroyed()) {
+            animation.tick();
             setY(getY() + speed);
             if (getY() == game.getHeight()) {
                 setDestroyed(true);
@@ -81,7 +84,7 @@ public class Bomb extends Item{
     @Override
     public void render(Graphics g) {
         if(!isDestroyed()){
-            g.drawImage(Assets.bomb, getX(), getY(), getWidth(), getHeight(), null);
+            g.drawImage(animation.getCurrentFrame(), getX(), getY(), getWidth(), getHeight(), null);
         }
     }
     

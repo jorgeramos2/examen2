@@ -19,14 +19,16 @@ public class Shot extends Item{
     private int height;
     private boolean visible;
     private Game game;
+    private Animation animation;
 
     public Shot(int x, int y, boolean visible, Game game) {
         super(x, y);
         speed = 5;
-        width = 10;
-        height = 20;
+        width = 20;
+        height = 40;
         this.visible = visible;
         this.game = game;
+        animation = new Animation(Assets.playerBlast, 100);
     }
 
     public int getWidth() {
@@ -83,6 +85,7 @@ public class Shot extends Item{
     @Override
     public void tick() {
         if(isVisible()){
+            animation.tick();
             setY(getY() - speed);
             if (getY() == 0) {
                 game.deleteLaser();
@@ -93,7 +96,7 @@ public class Shot extends Item{
     @Override
     public void render(Graphics g) {
         if(isVisible()){
-            g.drawImage(Assets.laser, getX(), getY(),getWidth() , getHeight(), null);
+            g.drawImage(animation.getCurrentFrame(), getX(), getY(),getWidth() , getHeight(), null);
         }
     }
     

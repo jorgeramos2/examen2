@@ -67,6 +67,10 @@ public class Player extends Item{
         return dead;
     }
     
+    public void revive(){
+        dead = false;
+    }
+    
     public String toString(){
         return "" + getX();
     }

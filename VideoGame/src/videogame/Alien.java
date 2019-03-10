@@ -27,7 +27,7 @@ public class Alien extends Item {
         this.game = game;
         speedX = 2;
         speedY = 5;
-        bomb = new Bomb(x,y, 50,50, game);
+        bomb = new Bomb(x,y, 20,50, game);
     }
 
     public int getDirection() {
