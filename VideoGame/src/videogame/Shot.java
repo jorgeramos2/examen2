@@ -80,11 +80,14 @@ public class Shot extends Item{
         setX(newX);
         setY(newY);
         setVisible(newVisibility);
+        animation = new Animation(Assets.playerBlast, 100);
+
     }
 
     @Override
     public void tick() {
         if(isVisible()){
+            System.out.println("Gojng to tick shot");
             animation.tick();
             setY(getY() - speed);
             if (getY() == 0) {
@@ -95,8 +98,15 @@ public class Shot extends Item{
 
     @Override
     public void render(Graphics g) {
-        if(isVisible()){
-            g.drawImage(animation.getCurrentFrame(), getX(), getY(),getWidth() , getHeight(), null);
+        if (isVisible()) {
+            if (animation != null) {
+
+                try {
+                    g.drawImage(animation.getCurrentFrame(), getX(), getY(), getWidth(), getHeight(), null);
+                } catch (NullPointerException e) {
+                    System.out.println("Couldn't render animated shot");
+                }
+            }
         }
     }
     

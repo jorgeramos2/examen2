@@ -18,6 +18,10 @@ public class Alien extends Item {
     private int speedY;
     private Game game;
     private Bomb bomb;
+    private Animation explosionAnimation;
+    private boolean dead;
+    private int deadCounter;
+    private boolean dying;
     
     public Alien(int x, int y, int direction, int width, int height, Game game) {
         super(x, y);
@@ -28,6 +32,9 @@ public class Alien extends Item {
         speedX = 2;
         speedY = 5;
         bomb = new Bomb(x,y, 20,50, game);
+        explosionAnimation = new Animation(Assets.explosion, 100);
+        dead = false;
+        dying = false;
     }
 
     public int getDirection() {
@@ -73,6 +80,30 @@ public class Alien extends Item {
     public String toString(){
         return ""+getX()+","+getY()+","+game.getDirection()+","+getBomb().isDestroyed() + ","+getBomb().getX() + ","+getBomb().getY();
     }
+
+    public boolean isDead() {
+        return dead;
+    }
+
+    public void setDead(boolean dead) {
+        this.dead = dead;
+    }
+
+    public int getDeadCounter() {
+        return deadCounter;
+    }
+
+    public void setDeadCounter(int deadCounter) {
+        this.deadCounter = deadCounter;
+    }
+
+    public boolean isDying() {
+        return dying;
+    }
+
+    public void setDying(boolean dying) {
+        this.dying = dying;
+    }
     
     /**
      * Method used to update the Alien's bomb. Used when loading a previous game state.
@@ -87,12 +118,23 @@ public class Alien extends Item {
     }
     
     public void tick() {
-
+        if(isDying()){
+            if(deadCounter != 0){
+                deadCounter--;
+            } else {
+                setDead(true);
+                setDying(false);
+            }
+        }
     }
     
     @Override
     public void render(Graphics g) {
-        g.drawImage(Assets.alien, getX(), getY(), getWidth(), getHeight(), null);
+        if(isDying()){
+            g.drawImage(explosionAnimation.getCurrentFrame(), getX(), getY(), getWidth(), getHeight(), null);
+        } else {
+            g.drawImage(Assets.alien, getX(), getY(), getWidth(), getHeight(), null);
+        }
     }
     
 }
